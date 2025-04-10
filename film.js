@@ -111,13 +111,31 @@ const titleElement = document.querySelector('.card-title');
 titleElement.innerHTML = `${filmData.nazev}`;
 document.querySelector('.card-text').innerHTML = `${filmData.popis}`;
 document.querySelector('.img-fluid').src = `${filmData.plakat.url}`;
-/*
+
+//bonus filmová premiéra
+const premieraFilm = dayjs(filmData.premiera);
+const today = dayjs();
+const diffPremiere = premieraFilm.diff(today, 'day');
+// diff spočítá kolik milisekund je od premiery do dnes
+// funkci volám dayjs() a druhý parametr udává v jakých jednotkách chci výsledek. milisekundy jsou k ničemu, takže zadám "day" pro prevod do dnů
+
 const premieraElement = document.querySelector('#premiera');
-premieraElement.innerHTML = `
-Premiéra <strong>${filmData.premiera}</strong>, což je za 24 dní.`;
-*/
+if (diffPremiere > 0) {
+  premieraElement.innerHTML = `
+Premiéra <strong> ${premieraFilm.format(
+    'D. M. YYYY',
+  )}</strong>, což je za ${diffPremiere} dní.`;
+} else if (diffPremiere < 0) {
+  premieraElement.innerHTML = `
+  Premiéra <strong> ${premieraFilm.format(
+    'D. M. YYYY',
+  )}</strong>, což bylo před ${diffPremiere * -1} dny.`; //
+  // tady se zobrazí dny v mínusu, tak jsem vynásobila -1, chatgpt radí ${Math.abs(diffPremiere)}
+} else {
+  premieraElement.innerHTML = `
+Premiéra <strong> ${premieraFilm.format('D. M. YYYY')}</strong>, což je dnes!`;
+}
+
 /*
-
-Cyklem prohledejte pol
-
-Vepište informace (název, popis, plakát) o nalezeném filmu do stránky. Upravte textový obsah a atributy příslušných potomků prvku #detail-filmu. Do .card-text vepište dlouhý popis filmu. */
+Extra bonus
+Zařiďte, aby tvar slova den byl ve správném tvaru, aby se třeba nestalo „což bylo před 1 dní“.*/
