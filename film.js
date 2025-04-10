@@ -119,23 +119,101 @@ const diffPremiere = premieraFilm.diff(today, 'day');
 // diff spočítá kolik milisekund je od premiery do dnes
 // funkci volám dayjs() a druhý parametr udává v jakých jednotkách chci výsledek. milisekundy jsou k ničemu, takže zadám "day" pro prevod do dnů
 
+const sklonujDny = (diffPremiere) => {
+  const den = diffPremiere;
+  if (den === 1) {
+    return 'den';
+  } else if (den >= 2 && den <= 4) {
+    return 'dny';
+  } else if (den === -1) {
+    return 'dnem';
+  } else if (den < -1) {
+    return 'dny';
+  } else {
+    return 'dní';
+  }
+};
+const jednotka = sklonujDny(diffPremiere);
+/*
+Extra bonus
+Zařiďte, aby tvar slova den byl ve správném tvaru, aby se třeba nestalo „což bylo před 1 dní“.
+Do minulosti:
+„před 1 dnem / 2–4 dny / 5+ dny“*/
+
 const premieraElement = document.querySelector('#premiera');
 if (diffPremiere > 0) {
   premieraElement.innerHTML = `
 Premiéra <strong> ${premieraFilm.format(
     'D. M. YYYY',
-  )}</strong>, což je za ${diffPremiere} dní.`;
+  )}</strong>, což je za ${diffPremiere} ${jednotka}.`;
 } else if (diffPremiere < 0) {
   premieraElement.innerHTML = `
   Premiéra <strong> ${premieraFilm.format(
     'D. M. YYYY',
-  )}</strong>, což bylo před ${diffPremiere * -1} dny.`; //
+  )}</strong>, což bylo před ${diffPremiere * -1} ${jednotka}.`; //
   // tady se zobrazí dny v mínusu, tak jsem vynásobila -1, chatgpt radí ${Math.abs(diffPremiere)}
 } else {
   premieraElement.innerHTML = `
 Premiéra <strong> ${premieraFilm.format('D. M. YYYY')}</strong>, což je dnes!`;
 }
 
-/*
+/*7. Zařiďte, aby klikání na hvězdičky v hodnocení filmu zvýraznilo všechny hvězdičky až po kliknutou.
+V souboru film.js si přichystejte pomocnou funkci pro zvýraznění určitého počtu hvězdiček.
+Ve funkci počítejte s jedním vstupním parametrem, číslem od jedné do pěti.
+Ve funkci projděte cyklem všechny prvky se třídou fa-star.
+Zvýrazněným hvězdičkám odeberte třídu far a přidejte fas. Ostatním obráceně. Zvýrazněné nechť jsou ty, které jsou v pořadí menší nebo rovny číslu ze vstupu funkce. Pokud tedy funkci zavoláte například s číslem tři, první tři hvězdičky budou mít třídu fas a zbylé dvě budou mít far.
+Funkci vyzkoušejte zavolat s různými hodnotami. Zkušební volání ale v kódu nenechávejte.
+Smyčkou přidejte všem hvězdičkám, prvkům se třídou fa-star posluchač události na kliknutí.
+Po kliknutí zjistěte, na kterou hvězdičku uživatel kliknul. Každá hvězdička má ve svém textovém obsahu číslo pořadí.
+Číslo využijte jako parametr funkce předchystané podle instrukcí výše.
+
+Bonus
+Při přejíždění myší přes hvězdičky zvýrazněte všechny až po tu, na které je uživatel myší.
+Kromě posluchače události na kliknutí přidejte i posluchač na mouseenter a opět podle textového obsahu hvězdičky zavolejte vaši funkci s příslušným parametrem.
+Pokud uživatel s myší odjede pryč, zvýrazněte hvězdičky zpět tak, jak byly po posledním kliknutí.
+Kdykoliv uživatel na nějakou hvězdičku klikne, poznamenejte si bokem, kolikátá to byla.
+S událostí mouseleave zavolete vaši funkci s poznamenanou hodnotou. */
+
+/* 8. Umožněte uživateli vyplněním formuláře přidat k filmu vlastní poznámku.
+V souboru film.js pomocí document.querySelector najděte prvek s id note-form.
+Při pokusu o odeslání tohoto formuláře zamezte výchozí chování prohlížeče.
+Ověřte, že uživatel do textového pole, prvku s id message-input něco napsal. Pokud ne, přidejte prvku třídu is-invalid, která ho zvýrazní červeně.
+Pokud uživatel něco napsal, ověřte, že souhlasil s podmínkami, že zaškrtl políčko s id terms-checkbox. Pokud nezaškrtl, přidejte políčku třídu is-invalid
+Pokud uživatel splnil obě podmínky z kroků výše, nahraďte HTML obsah formuláře za odstavec <p class="card-text">…</p> s textem z textového pole.
+
+Bonus
+Pokud vyživatel něco ve formuláři vynechal, pomozte mu zaměřením příslušného formulářového prvku.
+V místech, kde přidáváte třídu is-invalid, volejte také na formulářovém prvku metodu .focus(). Ta například u textového pole přenese kurzor pro psaní rovnou na správné místo, aby uživatel mohl začít psát z klávesnice.
+ */
+
+/* 9. Obohaťte video přehrávač vlastními ovládacími prvky.
+V souboru film.html u prvku <video> umažte ručně atribut controls. Skryjí se tím ovládací prvky předchystané přímo prohlížečem. V CSS je pak už hotový kód, který automaticky zobrazí <div class="player-controls"> s vlastním vizuálem. Vy v CSS nemusíte nic měnit. Jen si všimněte, že se na stránce objevilo tlačítko pro spuštění filmu, které ale nereaguje na klikání.
+Oživte tlačítko pro přehrávání.
+V souboru film.js, pokud je na stránce prvek s id prehravac, přidejte posluchač události kliknutí na prvek se třídou play.
+Na kliknutí zavolejte na prvku <video> metodu .play(). Pokud uživatel klikne, video by se mělo začít přehrávat.
+Přidejte na <video> posluchač události playing. Ta nastává v okamžiku, kdy se video začíná přehrávat.
+Při události na prvku s id prehravac přidejte třídu playing. Předchystané CSS v takovém případě zařídí, že se přehrávací tlačítko skryje a místo něho se objeví (dosud schované) tlačítko pro pozastavení.
+Oživte tlačítko pro pozastavení.
+Tlačítku .pause přidejte posluchač, který po kliknutí zavolá na videu metodu .pause(), což pozastaví přehrávání.
+Poslouchejte na událost s názvem pause. Pokud nastane, odeberte z přehrávače třídu playing.
+V prvku se třídou current-time zobrazujte aktuální čas přehrávaného videa.
+Poslouchejte na prvku videa událost timeupdate. Pokud nastane, vyčtěte z videa přes vlastnost .currentTime počet přehraných sekund.
+Aktuální čas zaokrouhlete a převeďte zvlášť na minuty a sekundy.
+Obě hodnoty oddělené dvojtečkou vypište do prvku .current-time.
+
+Bonus
+Spusťte/pozastavte přehrávání, pokud uživatel na stránce zmáčkne klávesu mezerník.
+Všimněte si, že video se pozastavuje a přehrává, když uživatel píše do formuláře pro poznámku text a dělá u toho mezery. Spusťte/pozastavte přehrávání pouze v případě, že uživatel nebyl ve formuláři, když mačkal mezerník.
+
+if (
+  event.code === 'Space' &&
+  event.target.tagName !== 'TEXTAREA' &&
+  event.target.tagName !== 'INPUT' &&
+  event.target.tagName !== 'BUTTON'
+) {
+  // …
+}
+  
 Extra bonus
-Zařiďte, aby tvar slova den byl ve správném tvaru, aby se třeba nestalo „což bylo před 1 dní“.*/
+Skryjte ovládací panel, pokud uživatel po dobu tří sekund nepohnul myší ani nestiskl žádnou klávesu. Využijte časovač. S každým pohnutím nebo stiskem ho zrušte a nastavte znovu na tři sekundy. Po uplynutí přidejte prvku .player-controls třídu hidden. Pro opětovné zobrazení (s každým pohybem, stiskem) třídu hidden zase odeberte, aby se ovládání zpět objevilo.
+*/
